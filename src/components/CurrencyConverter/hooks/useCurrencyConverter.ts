@@ -3,14 +3,13 @@ import axiosInstance from '../../../services/axiosInstance';
 
 export const useCurrencyConverter = () => {
   const [loading, setLoading] = useState(false);
-  const [rate, setRate] = useState<number | null>(null);
 
-  const convertBaseToTarget = (amount: number): string => {
-    return rate ? (amount * rate).toFixed(2) : '';
+  const convertBaseToTarget = (amount: number, currentRate: number): string => {
+    return currentRate ? (amount * currentRate).toFixed(2) : '';
   };
 
-  const convertTargetToBase = (amount: number): string => {
-    return rate ? (amount / rate).toFixed(2) : '';
+  const convertTargetToBase = (amount: number, currentRate: number): string => {
+    return currentRate ? (amount / currentRate).toFixed(2) : '';
   };
 
   const convert = async (from: string, to: string) => {
@@ -19,9 +18,9 @@ export const useCurrencyConverter = () => {
       const response = await axiosInstance.get(`/latest`, {
         params: { base: from, symbols: to },
       });
-      const rate = response.data.rates[to];
-      if (rate) {
-        setRate(rate);
+      const newRate = response.data.rates[to];
+      if (newRate) {
+        return newRate;
       } else {
         throw new Error('Invalid currency data');
       }

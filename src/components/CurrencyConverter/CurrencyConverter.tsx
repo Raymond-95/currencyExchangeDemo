@@ -5,11 +5,24 @@ import { IMAGES } from '../../assets/images';
 import { useFetchCurrencies } from './hooks/useFetchCurrencies';
 import { useCurrencyConverter } from './hooks/useCurrencyConverter';
 
-export const CurrencyConverter = () => {
+interface Props {
+  initialCurrencies: { baseCurrency: string; targetCurrency: string };
+  onCurrenciesSelect: (baseCurrency: string, targetCurrency: string) => void;
+}
+
+export const CurrencyConverter = ({
+  initialCurrencies,
+  onCurrenciesSelect,
+}: Props) => {
   const [baseAmount, setBaseAmount] = useState<string>('1');
   const [targetAmount, setTargetAmount] = useState<string>();
-  const [baseCurrency, setBaseCurrency] = useState('MYR'); // Set default base currency
-  const [targetCurrency, setTargetCurrency] = useState('USD'); // Set default target currency
+  const [baseCurrency, setBaseCurrency] = useState(
+    initialCurrencies.baseCurrency
+  );
+  const [targetCurrency, setTargetCurrency] = useState(
+    initialCurrencies.targetCurrency
+  );
+  const [currentRate, setCurrentRate] = useState<number>(0);
 
   const { loading: isFetchingCurrencies, currencies } = useFetchCurrencies();
   const {
@@ -21,13 +34,19 @@ export const CurrencyConverter = () => {
 
   useEffect(() => {
     const getLatestRate = async () => {
-      await convert(baseCurrency, targetCurrency);
+      const newRate = await convert(baseCurrency, targetCurrency);
+
+      if (newRate) {
+        const convertedTargetAmount = convertBaseToTarget(
+          Number(baseAmount),
+          newRate
+        );
+        setCurrentRate(newRate);
+        setTargetAmount(convertedTargetAmount);
+      }
     };
 
     getLatestRate();
-
-    const convertedTargetAmount = convertBaseToTarget(Number(baseAmount));
-    setTargetAmount(convertedTargetAmount);
   }, [baseCurrency, targetCurrency]);
 
   const handleSwitch = () => {
@@ -37,36 +56,50 @@ export const CurrencyConverter = () => {
     setTargetAmount(baseAmount);
   };
 
+  const onBaseCurrencySelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedBaseCurrency = e.target.value;
+    if (selectedBaseCurrency === targetCurrency) {
+      alert('Cannot select the same currency as target');
+      return;
+    }
+
+    setBaseCurrency(selectedBaseCurrency);
+    onCurrenciesSelect(selectedBaseCurrency, targetCurrency);
+  };
+
   const onBaseInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const baseInputValue = Number(e.target.value);
     setBaseAmount(e.target.value);
 
-    const convertedTargetAmount = convertBaseToTarget(baseInputValue);
+    const convertedTargetAmount = convertBaseToTarget(baseInputValue, currentRate);
     setTargetAmount(convertedTargetAmount);
+  };
+
+  const onTargetCurrencySelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedTargerCurrency = e.target.value;
+    if (selectedTargerCurrency === baseCurrency) {
+      alert('Cannot select the same currency as base');
+      return;
+    }
+    setTargetCurrency(selectedTargerCurrency);
+    onCurrenciesSelect(baseCurrency, selectedTargerCurrency);
   };
 
   const onTargetInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const targetInputValue = Number(e.target.value);
     setTargetAmount(e.target.value);
 
-    const convertedBaseAmount = convertTargetToBase(targetInputValue);
+    const convertedBaseAmount = convertTargetToBase(targetInputValue, currentRate);
     setBaseAmount(convertedBaseAmount);
   };
+
+  if (isFetchingCurrencies || isConvertingCurrency) return <p>Loading...</p>;
 
   return (
     <div className="currency-converter">
       <div className="currency-amount-container">
         <input type="number" value={baseAmount} onChange={onBaseInputChange} />
-        <select
-          value={baseCurrency}
-          onChange={(e) => {
-            if (e.target.value === targetCurrency) {
-              alert('Cannot select the same currency as target');
-              return;
-            }
-            setBaseCurrency(e.target.value);
-          }}
-        >
+        <select value={baseCurrency} onChange={onBaseCurrencySelect}>
           {currencies.map((currency) => (
             <option key={currency} value={currency}>
               {currency}
@@ -88,16 +121,7 @@ export const CurrencyConverter = () => {
           value={targetAmount !== null ? targetAmount : ''}
           onChange={onTargetInputChange}
         />
-        <select
-          value={targetCurrency}
-          onChange={(e) => {
-            if (e.target.value === baseCurrency) {
-              alert('Cannot select the same currency as base');
-              return;
-            }
-            setTargetCurrency(e.target.value);
-          }}
-        >
+        <select value={targetCurrency} onChange={onTargetCurrencySelect}>
           {currencies.map((currency) => (
             <option key={currency} value={currency}>
               {currency}

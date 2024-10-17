@@ -1,11 +1,9 @@
 .currency-converter {
-    display: flex;
+    display: inline-flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
-    gap: 50px;
-    min-height: 100vh;
-    /* Full viewport height to center vertically */
+    gap: 20px;
     padding: 10px;
 }
 
@@ -13,66 +11,59 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px;
+    padding: 5px;
     border: 1px solid #ccc;
-    /* Default 1px border */
     border-radius: 8px;
     background-color: #fff;
+    max-width: 300px;
+    flex: 1;
+    min-width: 200px;
 }
 
-/* Increase border width when input or select is focused */
 .currency-amount-container:focus-within {
     border: 2px solid #333;
-    /* Border changes to 2px when focused */
 }
 
-/* Style the input and select without borders */
 input[type='number'],
 select {
     border: none;
-    /* No border on the input and select */
     outline: none;
-    /* Remove default focus outline */
     padding: 5px;
     font-size: 1rem;
     background-color: transparent;
 }
 
 .switch-image {
-    cursor: pointer; /* Indicate it's clickable */
-    width: 24px;     /* Set desired width */
-    height: 24px;    /* Set desired height */
-    margin: 0 10px;  /* Add margin if needed */
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    margin: 0 10px;
 }
 
-/* Media query for mobile responsiveness */
 @media (max-width: 768px) {
     .currency-converter {
         flex-direction: column;
-        /* Stack items vertically on smaller screens */
         gap: 20px;
-        /* Reduce the gap between elements */
+        align-items: center;
     }
 
     .currency-amount-container {
         width: 100%;
-        /* Full width for mobile */
         padding: 8px;
-        /* Adjust padding for smaller screens */
+    }
+
+    .switch-image {
+        margin: 20px 0;
     }
 
     input[type='number'],
     select {
         width: 100%;
-        /* Make input and select full width on mobile */
         font-size: 0.9rem;
-        /* Adjust font size for smaller screens */
     }
 
     button {
         width: 100%;
-        /* Make button full width on mobile */
         padding: 8px 0;
-        /* Adjust padding for mobile buttons */
     }
 }
