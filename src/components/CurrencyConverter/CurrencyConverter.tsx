@@ -5,6 +5,11 @@ import { IMAGES } from '../../assets/images';
 import { useFetchCurrencies } from './hooks/useFetchCurrencies';
 import { useCurrencyConverter } from './hooks/useCurrencyConverter';
 
+import {
+  convertBaseToTarget,
+  convertTargetToBase,
+} from '../../utils/conversionUtils';
+
 interface Props {
   initialCurrencies: { baseCurrency: string; targetCurrency: string };
   onCurrenciesSelect: (baseCurrency: string, targetCurrency: string) => void;
@@ -25,12 +30,7 @@ export const CurrencyConverter = ({
   const [currentRate, setCurrentRate] = useState<number>(0);
 
   const { loading: isFetchingCurrencies, currencies } = useFetchCurrencies();
-  const {
-    loading: isConvertingCurrency,
-    convert,
-    convertBaseToTarget,
-    convertTargetToBase,
-  } = useCurrencyConverter();
+  const { loading: isConvertingCurrency, convert } = useCurrencyConverter();
 
   useEffect(() => {
     const getLatestRate = async () => {
@@ -71,7 +71,10 @@ export const CurrencyConverter = ({
     const baseInputValue = Number(e.target.value);
     setBaseAmount(e.target.value);
 
-    const convertedTargetAmount = convertBaseToTarget(baseInputValue, currentRate);
+    const convertedTargetAmount = convertBaseToTarget(
+      baseInputValue,
+      currentRate
+    );
     setTargetAmount(convertedTargetAmount);
   };
 
@@ -89,7 +92,10 @@ export const CurrencyConverter = ({
     const targetInputValue = Number(e.target.value);
     setTargetAmount(e.target.value);
 
-    const convertedBaseAmount = convertTargetToBase(targetInputValue, currentRate);
+    const convertedBaseAmount = convertTargetToBase(
+      targetInputValue,
+      currentRate
+    );
     setBaseAmount(convertedBaseAmount);
   };
 

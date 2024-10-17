@@ -4,14 +4,6 @@ import axiosInstance from '../../../services/axiosInstance';
 export const useCurrencyConverter = () => {
   const [loading, setLoading] = useState(false);
 
-  const convertBaseToTarget = (amount: number, currentRate: number): string => {
-    return currentRate ? (amount * currentRate).toFixed(2) : '';
-  };
-
-  const convertTargetToBase = (amount: number, currentRate: number): string => {
-    return currentRate ? (amount / currentRate).toFixed(2) : '';
-  };
-
   const convert = async (from: string, to: string) => {
     setLoading(true);
     try {
@@ -36,7 +28,5 @@ export const useCurrencyConverter = () => {
   return {
     loading,
     convert,
-    convertBaseToTarget,
-    convertTargetToBase,
   };
 };
