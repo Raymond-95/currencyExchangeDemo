@@ -1,6 +1,6 @@
 # Currency Exchange Demo
 
-<video src="https://github.com/user-attachments/assets/a16ca14e-86e9-4c9c-b58b-ccc082ee0218" width="500" />
+[video](https://github.com/user-attachments/assets/a16ca14e-86e9-4c9c-b58b-ccc082ee0218)
 
 ## How to start
 
