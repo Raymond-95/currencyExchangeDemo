@@ -1,0 +1,78 @@
+.currency-converter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 50px;
+    min-height: 100vh;
+    /* Full viewport height to center vertically */
+    padding: 10px;
+}
+
+.currency-amount-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    /* Default 1px border */
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+/* Increase border width when input or select is focused */
+.currency-amount-container:focus-within {
+    border: 2px solid #333;
+    /* Border changes to 2px when focused */
+}
+
+/* Style the input and select without borders */
+input[type='number'],
+select {
+    border: none;
+    /* No border on the input and select */
+    outline: none;
+    /* Remove default focus outline */
+    padding: 5px;
+    font-size: 1rem;
+    background-color: transparent;
+}
+
+.switch-image {
+    cursor: pointer; /* Indicate it's clickable */
+    width: 24px;     /* Set desired width */
+    height: 24px;    /* Set desired height */
+    margin: 0 10px;  /* Add margin if needed */
+}
+
+/* Media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .currency-converter {
+        flex-direction: column;
+        /* Stack items vertically on smaller screens */
+        gap: 20px;
+        /* Reduce the gap between elements */
+    }
+
+    .currency-amount-container {
+        width: 100%;
+        /* Full width for mobile */
+        padding: 8px;
+        /* Adjust padding for smaller screens */
+    }
+
+    input[type='number'],
+    select {
+        width: 100%;
+        /* Make input and select full width on mobile */
+        font-size: 0.9rem;
+        /* Adjust font size for smaller screens */
+    }
+
+    button {
+        width: 100%;
+        /* Make button full width on mobile */
+        padding: 8px 0;
+        /* Adjust padding for mobile buttons */
+    }
+}
